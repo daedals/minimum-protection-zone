@@ -1,27 +1,21 @@
-# Vuetify (Default)
+# The minimum protection zone is 1K
 
-This is the official scaffolding tool for Vuetify, designed to give you a head start in building your new Vuetify application. It sets up a base template with all the necessary configurations and standard directory structure, enabling you to begin development without the hassle of setting up the project from scratch.
+This is a public repository showing my results of a coding challenge. It is a vue-app using vuetify. The exact details of this challenge were intentionally held vague.
 
-## ❗️ Important Links
+## Important Links
 
-- 📄 [Docs](https://vuetifyjs.com/)
-- 🚨 [Issues](https://issues.vuetifyjs.com/)
-- 🏬 [Store](https://store.vuetifyjs.com/)
-- 🎮 [Playground](https://play.vuetifyjs.com/)
-- 💬 [Discord](https://community.vuetifyjs.com)
+The web-app is hostet [here](https://daedals.github.io/minimum-protection-zone/).
 
-## 💿 Install
+## Challenge
 
-Set up your project using your preferred package manager. Use the corresponding command to install the dependencies:
+Given a .json containing 3 arrays with a number of coordinates (in m) describing a robot, a gadget and a path: 
+- Calculate the length of the path in m,
+- Calculate the time it takes the robot to cover the distance of that path while its speed abides to given rules,
+- Calculate the area the gadget covers during the robots travel.
 
-| Package Manager                                                | Command        |
-|---------------------------------------------------------------|----------------|
-| [yarn](https://yarnpkg.com/getting-started)                   | `yarn install` |
-| [npm](https://docs.npmjs.com/cli/v7/commands/npm-install)     | `npm install`  |
-| [pnpm](https://pnpm.io/installation)                          | `pnpm install` |
-| [bun](https://bun.sh/#getting-started)                        | `bun install`  |
+## Solution
 
-After completing the installation, your environment is ready for Vuetify development.
+
 
 ## ✨ Features
 
@@ -35,9 +29,6 @@ After completing the installation, your environment is ready for Vuetify develop
 
 These features are curated to provide a seamless development experience from setup to deployment, ensuring that your Vuetify application is both powerful and maintainable.
 
-## 💡 Usage
-
-This section covers how to start the development server and build your project for production.
 
 ### Starting the Development Server
 
