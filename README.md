@@ -8,13 +8,38 @@ The web-app is hostet [here](https://daedals.github.io/minimum-protection-zone/)
 
 ## Challenge
 
-Given a .json containing 3 arrays with a number of coordinates (in m) describing a robot, a gadget and a path: 
-- Calculate the length of the path in m,
-- Calculate the time it takes the robot to cover the distance of that path while its speed abides to given rules,
-- Calculate the area the gadget covers during the robots travel.
+Given a .json containing 3 arrays with a number of coordinates (in m) describing a robot, a gadget and a path:
+- Display them visually,
+- calculate the length of the path in m,
+- calculate the time it takes the robot to cover the distance of that path while its speed abides to given rules and
+- calculate the area the gadget covers during the robots travel.
 
 ## Solution
 
+The chosen solution is explained in the following paragraph. All design decisions and their implementation are neglected in the explanation, this is purely an explanation for the mathematical approach:
+
+0. Proximity-based path clean-up:
+In a given example .json the last ~30 path nodes were centered around the same coordinate and presumably only due to gps-inaccuracy. They may be cleaned up in the paraeters section, when given a appropriate proximity value.
+
+1. Calculating the distance between paths nodes:
+The [pathmath](https://github.com/daedals/minimum-protection-zone/blob/main/src/composables/pathmath.ts)-Composable exposes a lot of arithmetic functions to the components. The total distance is calculated using the formula for arithmetic distance between two carthesian coordinates (path nodes here) and then summing up all individual distances in [Display](https://github.com/daedals/minimum-protection-zone/blob/main/src/components/Display.vue). This approach represents a lower bound and is suboptimal, I will discuss a better approach in a latter section.
+
+2. Calculate curvature:
+The function mengerCurvature(...) in [pathmath](https://github.com/daedals/minimum-protection-zone/blob/main/src/composables/pathmath.ts) calculates the curvature of a node in the path by assuming all points are on the radius of an unique circle and using the [Menger Formula](https://en.wikipedia.org/wiki/Menger_curvature). Since three consecutive points are necessary, the first and last path nodes are assumed to be ~infinite. All other nodes have a unique curvature.
+
+3. Calculate the speed:
+The challenge description gave a formula for determining the speed in dependance on the curvature. We apply that formula in the [Display](https://github.com/daedals/minimum-protection-zone/blob/main/src/components/Display.vue)-Component.
+
+4. Calculate travel time between nodes:
+We have a path node based speed value. We assume that the speed changes linearly between nodes which makes the calculation simply (v(i) + v(i+1))/2. Together with the determined distance we apply the formula for time: t = s/v (v is never 0 since v is capped by vMin)
+
+5. Determine the path of the attached gadget
+The gadget moves together with the robot which means it has its reference point in baseLink exactly as the robot (and the same rotation as the robot too). We assume that upon reaching a path node the robots direction of travel is opposite to the vector from the current path node to the one before. Using the gadgets coordinates, the baseLink-coordinates and the current path node we can determine a translation vetor. The gadgets base rotation is given by the rotation of the robots initial position, using this and the current and previous path node we can apply a rotation matrix to the gadgets translated coordinates.
+
+6. "Calculating" the area covered by the gadget
+The area of the resulting polygon from Step 5 could easily be calculated using the [Shoelace Formula](https://en.wikipedia.org/wiki/Shoelace_formula) but since areas that are covered multiple times should be counted once this becomes more difficult. THe least time-consuming method I found was to paint the known polygon onto a HTML-canvas and count the amount of colored pixels. The pixels per meter are defined by pxPerMeter in the [Display](https://github.com/daedals/minimum-protection-zone/blob/main/src/components/Display.vue)-Component. The area covered by the gadget can now be calculated by A = n(pixel) / pxPerMeter**2
+
+This concludes the explanation of my approach to finding the required values.
 
 
 ## ✨ Features
