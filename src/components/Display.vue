@@ -41,6 +41,10 @@ defineExpose({
 	useProvidedData,
 })
 
+const emit = defineEmits([
+	'resultsReady'
+])
+
 function useProvidedData(e: any, f: any) {
 
 	updateParameters(f)
@@ -50,7 +54,6 @@ function useProvidedData(e: any, f: any) {
 	data.path = [...arrayToCoords(e.path)]
 
 	// clean up the path with gps coordinates that lie closer together than radius 'accuracy'
-	// cleanPath(0.005)
 	cleanPath(proximityLimit.value)
 
 	// calulate distance between each path node
@@ -58,7 +61,6 @@ function useProvidedData(e: any, f: any) {
 
 	// calculate length of the path
 	pathLengthLowerBound.value = sumArray(data.distance)
-	console.log(pathLengthLowerBound.value)
 
 	// get curvature from path
 	calculateCurvature()
@@ -71,7 +73,7 @@ function useProvidedData(e: any, f: any) {
 
 	// calculate time for the path
 	pathTimeLowerBound.value = sumArray(data.time)
-	console.log(pathTimeLowerBound.value)
+	
 
 	// calculate the path both points of the gadget take
 	calculateGadgetPath()
@@ -84,12 +86,12 @@ function useProvidedData(e: any, f: any) {
 	adjustDisplay(limits.max, limits.min)
 	calculateArea()
 	drawDisplay()
+
+	emit("resultsReady", pathLengthLowerBound.value, pathTimeLowerBound.value, data.area,)
 }
 
 function updateParameters(params: any) {
 	/* takes provided parameters */
-
-	console.log(params)
 
 	proximityLimit.value = params.proximityLimit // m
 	pxPerMeter.value = params.pxPerMeter // 1/m
@@ -262,11 +264,9 @@ function calculateArea() {
 			}
 
 			// ctx.putImageData(imageData, 0, 0)
-			// console.log("white: " + white + " black: " + black)
 			// canvasElementRef.value.removeAttribute('hidden')
 
 			data.area = black / (pxPerMeter.value**2)
-			console.log(data.area)
 		}
 	}
 }
@@ -297,14 +297,6 @@ function drawDisplay() {
 				)
 				drawPolygon(ctx, hPolygon, pxPerMeter.value, border)
 			}
-
-			// for (let i = 1; i < data.gadgetPath.length; i++) {
-			// 	let hPolygon : Array<Coordinate> = normalizeCoordinates(
-			// 		origin.value, 
-			// 		[...data.gadgetPath[i], data.gadgetPath[i-1][1], data.gadgetPath[i-1][0]]
-			// 	)
-			// 	drawPolygon(ctx, hPolygon, pxPerMeter, border)
-			// }
 
 			drawLine(ctx, hCleaningGadget, pxPerMeter.value, border, "rgb(35 140 150)")
 

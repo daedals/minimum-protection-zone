@@ -10,5 +10,6 @@ declare module 'vue' {
     Display: typeof import('./src/components/Display.vue')['default']
     FilePicker: typeof import('./src/components/FilePicker.vue')['default']
     ParameterView: typeof import('./src/components/ParameterView.vue')['default']
+    ResultTable: typeof import('./src/components/ResultTable.vue')['default']
   }
 }
