@@ -1,6 +1,6 @@
 <template>
 	<v-expansion-panel>
-		<v-expansion-panel-title>
+		<v-expansion-panel-title >
 			<template v-slot:default="{ expanded }">
 				<v-row no-gutters>
 					<v-col class="d-flex justify-start" cols="4"> 1. File Upload </v-col>

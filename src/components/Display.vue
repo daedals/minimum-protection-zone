@@ -1,12 +1,14 @@
 <template>
 	<!-- <p> {{ props.data }} </p> -->
 	<v-col class="text-center">
-		<canvas hidden ref="canvasElementRef" class="display" width="300" height="300"></canvas>
+		<v-card overflow-auto fluid>
+			<canvas hidden ref="canvasElementRef" class="display" width="300" height="300"></canvas>
+		</v-card>
 	</v-col>
 </template>
 
 <script setup lang="ts">
-import { type Ref, ref, computed } from 'vue'
+import { ref } from 'vue'
 import { arrayToCoords, euclideanDistance, getLimits, normalizeCoordinates, type Coordinate, mengerCurvature, sumArray, getTranslationVector, translateCoordinate, rotateCoordinate } from '@/composables/pathmath';
 import { drawPolygon, drawLine, drawDots, drawGrid, drawPolygonFill } from '@/composables/drawFuncs';
 

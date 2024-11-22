@@ -6,7 +6,7 @@
 					<v-col class="d-flex justify-start" cols="4"> 2. Edit parameters </v-col>
 					<v-col class="text-grey" cols="8">
 						<span v-if="expanded" key="0"> Edit the parameters to your liking and apply them. </span>
-						<span v-else key="1"></span>
+						<span v-else key="1" @click="console.log('click')"></span>
 					</v-col>
 				</v-row>
 			</template>
@@ -73,7 +73,7 @@
 							v-model="pxPerMeter"
 							:rules="rules"
 							label="pixel per meter in 1/m"
-							required
+							disabled
 						></v-text-field>
 						</v-col>
 
@@ -112,6 +112,7 @@
 
 	// UI refs
 	const btnDisabled : Ref<boolean> = ref(false)
+	const pnlDisabled : Ref<boolean> = ref(true)
 	const valid : Ref<boolean> = ref(false)
 
 	// logic refs

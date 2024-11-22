@@ -6,9 +6,9 @@
 				<v-col cols="16" md="12" >
 					<v-sheet rounded="lg">
 						<v-container class="text-center">
-							<h1>The minimum protection zone is 1K</h1>
+							<h1 rounded="lg" style="color: #FFDE00">The minimum protection zone is 1K</h1>
 						</v-container>
-						<v-expansion-panels v-model="panel" :readonly="readonly">
+						<v-expansion-panels v-model="panel" :readonly="readonly" >
 							<FilePicker @data-ready="onDataReady" />
 							<ParameterView @parameters-applied="onParametersApplied"/>
 						</v-expansion-panels>
