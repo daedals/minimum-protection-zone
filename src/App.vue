@@ -13,7 +13,7 @@
 					:readonly="readonly"
 				>
 					<FilePicker @data-ready="onDataReady" />
-					<ParameterView />
+					<ParameterView @parameters-applied="onParametersApplied"/>
 				</v-expansion-panels>
 				<Display ref="displayElementRef" />
             </v-sheet>
@@ -27,15 +27,22 @@
 <script setup lang="ts">
 	import { ref, type Ref } from 'vue'
 
-	const displayElementRef = ref()
 	const data = ref()
+	const parameters = ref()
+	const displayElementRef = ref()
 
 	const panel = ref([0])
 	const readonly : Ref<boolean> = ref(true)
 
 	function onDataReady(e: any) {
 		data.value = e
-		displayElementRef.value.useProvidedData(e)
+		// displayElementRef.value.useProvidedData(e)
 		panel.value = [1]
 	}
+
+	function onParametersApplied(e: any) {
+		parameters.value = e
+		displayElementRef.value.useProvidedData(data.value, parameters.value)
+	}
+
 </script>

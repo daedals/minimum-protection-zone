@@ -6,24 +6,25 @@
 </template>
 
 <script setup lang="ts">
-import { type Ref, ref, defineProps, watch } from 'vue'
+import { type Ref, ref, computed } from 'vue'
 import { arrayToCoords, euclideanDistance, getLimits, normalizeCoordinates, type Coordinate, mengerCurvature, sumArray, getTranslationVector, translateCoordinate, rotateCoordinate } from '@/composables/pathmath';
 import { drawPolygon, drawLine, drawDots, drawGrid, drawPolygonFill } from '@/composables/drawFuncs';
 
 const canvasElementRef = ref<HTMLCanvasElement>()
 
-const pxPerMeter = 200
-const border = pxPerMeter / 2
 const origin = ref<Coordinate>()
 
 const pathLengthLowerBound = ref(0)
 const pathTimeLowerBound = ref(0)
 
-const vMax: Ref<number> = ref(1.1) // m/s
-const vMin: Ref<number> = ref(0.15) // m/s
-const kCrit: Ref<number> = ref(0.5) // 1/m
-const kMax: Ref<number> = ref(10) // 1/m
-
+const proximityLimit = ref<number>(0.005) // m
+const pxPerMeter = ref<number>(200) // 1/m
+const vMax = ref<number>(1.1) // m/s
+const vMin = ref<number>(0.15) // m/s
+const kCrit = ref<number>(0.5) // 1/m
+const kMax = ref<number>(10) // 1/m
+const border = pxPerMeter.value / 2
+				
 const data = {
 	path: Array<Coordinate>(),
 	robot: Array<Coordinate>(),
@@ -36,7 +37,13 @@ const data = {
 	area: 0
 }
 
-function useProvidedData(e: any) {
+defineExpose({
+	useProvidedData,
+})
+
+function useProvidedData(e: any, f: any) {
+
+	updateParameters(f)
 
 	data.robot = [...arrayToCoords(e.robot)]
 	data.gadget = [...arrayToCoords(e.cleaning_gadget)]
@@ -44,7 +51,7 @@ function useProvidedData(e: any) {
 
 	// clean up the path with gps coordinates that lie closer together than radius 'accuracy'
 	// cleanPath(0.005)
-	cleanPath(0.01)
+	cleanPath(proximityLimit.value)
 
 	// calulate distance between each path node
 	calculateDistance()
@@ -79,9 +86,18 @@ function useProvidedData(e: any) {
 	drawDisplay()
 }
 
-defineExpose({
-	useProvidedData,
-})
+function updateParameters(params: any) {
+	/* takes provided parameters */
+
+	console.log(params)
+
+	proximityLimit.value = params.proximityLimit // m
+	pxPerMeter.value = params.pxPerMeter // 1/m
+	vMax.value = params.vMax // m/s
+	vMin.value = params.vMin // m/s
+	kCrit.value = params.kCrit // 1/m
+	kMax.value = params.kMax // 1/m
+}
 
 function calculateDistance() {
 	/* calculate distance between each node and the one before, array length =(path.length - 1) */
@@ -207,8 +223,8 @@ function adjustDisplay(max: Coordinate, min: Coordinate) {
 	let yRange = max.y - min.y
 
 	if (canvasElementRef && canvasElementRef.value) {
-		canvasElementRef.value.width = Math.ceil((xRange * pxPerMeter + 2*border) / 10) *10
-		canvasElementRef.value.height = Math.ceil((yRange * pxPerMeter + 2*border) / 10) *10
+		canvasElementRef.value.width = Math.ceil((xRange * pxPerMeter.value + 2*border) / 10) *10
+		canvasElementRef.value.height = Math.ceil((yRange * pxPerMeter.value + 2*border) / 10) *10
 	}
 }
 
@@ -228,7 +244,7 @@ function calculateArea() {
 					origin.value, 
 					[...data.gadgetPath[i], data.gadgetPath[i-1][1], data.gadgetPath[i-1][0]]
 				)
-				drawPolygonFill(ctx, hPolygon, pxPerMeter, border)
+				drawPolygonFill(ctx, hPolygon, pxPerMeter.value, border)
 			}
 
 			// this doenst seem to work, maybe image is not yet done drawing?
@@ -249,7 +265,7 @@ function calculateArea() {
 			// console.log("white: " + white + " black: " + black)
 			// canvasElementRef.value.removeAttribute('hidden')
 
-			data.area = black / (pxPerMeter**2)
+			data.area = black / (pxPerMeter.value**2)
 			console.log(data.area)
 		}
 	}
@@ -269,17 +285,17 @@ function drawDisplay() {
 			let hPath : Array<Coordinate> = normalizeCoordinates(origin.value, [...data.path])
 			
 			
-			drawGrid(ctx, origin.value, pxPerMeter, border)
-			drawLine(ctx, hPath, pxPerMeter, border)
-			drawDots(ctx, hPath, pxPerMeter, border)
-			drawPolygon(ctx, hRobot, pxPerMeter, border)
+			drawGrid(ctx, origin.value, pxPerMeter.value, border)
+			drawLine(ctx, hPath, pxPerMeter.value, border)
+			drawDots(ctx, hPath, pxPerMeter.value, border)
+			drawPolygon(ctx, hRobot, pxPerMeter.value, border)
 
 			for (let i = 1; i < data.gadgetPath.length; i++) {
 				let hPolygon : Array<Coordinate> = normalizeCoordinates(
 					origin.value, 
 					[...data.gadgetPath[i], data.gadgetPath[i-1][1], data.gadgetPath[i-1][0]]
 				)
-				drawPolygon(ctx, hPolygon, pxPerMeter, border)
+				drawPolygon(ctx, hPolygon, pxPerMeter.value, border)
 			}
 
 			// for (let i = 1; i < data.gadgetPath.length; i++) {
@@ -290,7 +306,7 @@ function drawDisplay() {
 			// 	drawPolygon(ctx, hPolygon, pxPerMeter, border)
 			// }
 
-			drawLine(ctx, hCleaningGadget, pxPerMeter, border, "rgb(35 140 150)")
+			drawLine(ctx, hCleaningGadget, pxPerMeter.value, border, "rgb(35 140 150)")
 
 			canvasElementRef.value.removeAttribute('hidden')
 		}

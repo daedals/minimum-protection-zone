@@ -41,23 +41,23 @@ The area of the resulting polygon from Step 5 could easily be calculated using t
 
 This concludes the explanation of my approach to finding the required values.
 
-### Possible impovements
+## Possible impovements
 
 Following improvements could be made:
 
-- The calculation of the distance between path nodes is currently made using the euclidean distance which is inaccurate and only represents a lower bound. Instead we could calculate the curvature first since its not dependant on the distance and give a more accurate approximation of the derivates using discreet differences explained [here](https://stackoverflow.com/questions/67674535/how-to-calculate-the-point-by-point-radius-of-curvature-of-a-trajectory-that-is).
+- The calculation of the distance between path nodes is currently made using the euclidean distance which is inaccurate and only represents a lower bound. Instead we could calculate the curvature first since its not dependant on the distance and give a more accurate approximation of the derivates using discreet differences explained [here](https://stackoverflow.com/questions/67674535/how-to-calculate-the-point-by-point-radius-of-curvature-of-a-trajectory-that-is) (further reference [here](https://math.stackexchange.com/questions/2707900/finding-a-smooth-path-between-points-on-a-2d-map-with-maximum-curvature), [here](https://www.mathworks.com/matlabcentral/answers/2096886-what-is-the-best-way-of-calculating-the-path-length-of-a-freely-moving-tracked-animal) and [here](https://www.researchgate.net/publication/242547898_Path_Estimation_from_GPS_Tracks)).
 - The accuracy of the area calculation is dependant on the value of pxPerMeter, the whole approach should either be changed. A possible replacement could be a marching square algorithm to determine the borders of the polygon.
 - Input sanitization is rudimentary, this needs to be adressed.
 - Visualization of the data is rudimentary, can be improved.
 
-### Design choices
+## Design choices
 
 - No Store Manager was used since it is a single page application with three components.
 - No routing was used for the same reason.
 - All UI components are standard vuetify-components.
 - Colors were chosen based on the coorporate identity of a certain company.
 
-### Using the [website](https://daedals.github.io/minimum-protection-zone/)
+## Using the [website](https://daedals.github.io/minimum-protection-zone/)
 
 1. Choose a .json-file from your computer using the File Picker,
 2. click the "Upload"-button.
